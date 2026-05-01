@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs wc *)",
+      "WebFetch(domain:api-docs.deepseek.com)",
+      "WebFetch(domain:qwen.ai)",
+      "WebSearch"
+    ]
+  }
+}

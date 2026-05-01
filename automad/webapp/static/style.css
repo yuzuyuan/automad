@@ -1,0 +1,385 @@
+/* ================================================================
+   MAD Studio — Web UI 样式
+   ================================================================ */
+
+:root {
+  --bg: #0f1117;
+  --bg-panel: #1a1d27;
+  --bg-input: #252834;
+  --border: #2e3140;
+  --text: #e1e4ec;
+  --text-muted: #8890a4;
+  --accent: #6366f1;
+  --accent-hover: #5558e6;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --radius: 8px;
+  --font: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ---- Top Bar ---- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 32px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+}
+.topbar h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.topbar .subtitle {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.task-indicator {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--accent);
+}
+.task-indicator.hidden { display: none; }
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- Steps Nav ---- */
+.steps-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 16px 32px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: all .2s;
+  position: relative;
+}
+.step::after {
+  content: '→';
+  position: absolute;
+  right: -8px;
+  color: var(--border);
+}
+.step:last-child::after { content: none; }
+.step:hover { background: var(--bg-input); color: var(--text); }
+.step.active { color: var(--accent); font-weight: 600; }
+.step.done { color: var(--success); }
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--bg-input);
+  border: 2px solid var(--border);
+}
+.step.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+.step.done .step-num { background: var(--success); border-color: var(--success); color: #fff; }
+
+/* ---- Step Content ---- */
+.step-content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+.step-panel { display: none; }
+.step-panel.active { display: block; }
+.step-panel h2 {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.hint {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+/* ---- Forms ---- */
+.form-row {
+  margin-bottom: 18px;
+}
+.form-row label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.label-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 400;
+  padding: 1px 7px;
+  border-radius: 3px;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+input[type="text"],
+input[type="password"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: var(--font);
+  background: var(--bg-input);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color .2s;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent);
+}
+textarea { resize: vertical; min-height: 64px; }
+select { cursor: pointer; }
+
+.input-group {
+  display: flex;
+  gap: 8px;
+}
+.input-group input { flex: 1; }
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-input);
+  color: var(--text);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.btn:hover { background: #303548; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--accent-hover); }
+.btn.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+.btn.large { padding: 14px 36px; font-size: 16px; }
+
+.status-text {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 13px;
+  color: var(--success);
+}
+
+/* ---- Hidden ---- */
+.hidden { display: none !important; }
+
+/* ---- File List ---- */
+.file-list {
+  list-style: none;
+  margin-top: 8px;
+}
+.file-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  font-size: 13px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 4px;
+}
+.file-list .file-name { font-weight: 600; }
+.file-list .file-size { color: var(--text-muted); font-size: 12px; }
+
+/* ---- Song List ---- */
+.song-list {
+  list-style: none;
+  margin-top: 8px;
+}
+.song-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 4px;
+  transition: background .15s;
+}
+.song-list li:hover { background: #303548; }
+.song-list li.selected { border-color: var(--accent); background: #252845; }
+.song-list .song-thumb {
+  width: 42px; height: 42px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.song-list .song-detail { flex:1; min-width:0; }
+.song-list .song-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.song-list .song-artist { color: var(--text-muted); font-size: 12px; }
+
+/* ---- Song Detail Card ---- */
+.song-detail-card {
+  padding: 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-top: 12px;
+}
+.song-meta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.song-meta img { border-radius: 6px; object-fit: cover; }
+.song-info h4 { font-size: 16px; }
+.song-info p { font-size: 13px; color: var(--text-muted); }
+.song-id-display { font-size: 12px !important; color: var(--accent) !important; }
+
+.lyric-preview {
+  margin-top: 16px;
+  padding: 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-height: 300px;
+  overflow-y: auto;
+}
+.lyric-preview h4 { font-size: 14px; margin-bottom: 8px; color: var(--text-muted); }
+.lyric-preview pre {
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  color: var(--text);
+}
+
+/* ---- Progress ---- */
+.progress-bar-bg {
+  width: 100%;
+  height: 10px;
+  background: var(--bg-input);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), #a78bfa);
+  border-radius: 5px;
+  transition: width .3s ease;
+}
+.progress-text { font-size: 14px; color: var(--text); margin-bottom: 4px; }
+.progress-stage { font-size: 12px; color: var(--text-muted); }
+
+/* ---- Log ---- */
+#log-container {
+  margin-top: 20px;
+  padding: 14px;
+  background: #0a0c12;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+#log-container h4 { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+#log-output {
+  font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  max-height: 240px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  color: var(--text-muted);
+}
+
+/* ---- Result ---- */
+.result-card {
+  text-align: center;
+  padding: 32px;
+  background: var(--bg-input);
+  border: 1px solid var(--success);
+  border-radius: var(--radius);
+  margin-top: 20px;
+}
+.result-card h3 { font-size: 20px; color: var(--success); margin-bottom: 8px; }
+.result-actions { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
+
+/* ---- Run Section ---- */
+.run-section {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+/* ---- Footer ---- */
+.step-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 32px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+}
+#step-indicator {
+  font-size: 13px;
+  color: var(--text-muted);
+  min-width: 40px;
+  text-align: center;
+}
+
+/* ---- checkbox ---- */
+input[type="checkbox"] {
+  accent-color: var(--accent);
+  margin-right: 6px;
+  vertical-align: middle;
+}

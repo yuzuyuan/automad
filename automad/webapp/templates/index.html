@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAD 动漫自动化剪辑系统</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div id="app">
+  <!-- 顶部栏 -->
+  <header class="topbar">
+    <h1>MAD Studio</h1>
+    <span class="subtitle">动漫 Music Anime Douga 自动化剪辑</span>
+    <div id="task-indicator" class="task-indicator hidden">
+      <span class="spinner"></span><span id="task-status-text"></span>
+    </div>
+  </header>
+
+  <!-- 步骤导航 -->
+  <nav class="steps-nav">
+    <div class="step" data-step="1"><span class="step-num">1</span> API 配置</div>
+    <div class="step" data-step="2"><span class="step-num">2</span> 视频源</div>
+    <div class="step" data-step="3"><span class="step-num">3</span> 选歌</div>
+    <div class="step" data-step="4"><span class="step-num">4</span> 创意设定</div>
+    <div class="step" data-step="5"><span class="step-num">5</span> 运行</div>
+  </nav>
+
+  <!-- 步骤内容区 -->
+  <main class="step-content">
+
+    <!-- ====== Step 1: API 配置 ====== -->
+    <section class="step-panel active" id="panel-step1">
+      <h2>API 密钥配置</h2>
+      <p class="hint">密钥仅保存在本次会话的内存中，不会写入磁盘。</p>
+
+      <div class="form-row">
+        <label for="key-deepseek">DeepSeek V4 API Key <span class="label-tag">文本 LLM</span></label>
+        <input type="password" id="key-deepseek" placeholder="sk-xxxxxxxxxxxxxxxx" autocomplete="off">
+      </div>
+
+      <div class="form-row">
+        <label for="key-dashscope">DashScope API Key <span class="label-tag">Qwen-VL 标注</span></label>
+        <input type="password" id="key-dashscope" placeholder="sk-xxxxxxxxxxxxxxxx" autocomplete="off">
+      </div>
+
+      <div class="form-row">
+        <label for="key-openai">OpenAI API Key <span class="label-tag">Embedding</span></label>
+        <input type="password" id="key-openai" placeholder="sk-xxxxxxxxxxxxxxxx" autocomplete="off">
+      </div>
+
+      <div class="form-row">
+        <label for="cookie-netease">网易云音乐 Cookie <span class="label-tag">音频源</span></label>
+        <textarea id="cookie-netease" rows="3" placeholder="MUSIC_U=xxx; __csrf=xxx; ..."></textarea>
+      </div>
+
+      <button class="btn primary" onclick="saveKeys()">保存配置</button>
+      <span id="keys-status" class="status-text"></span>
+    </section>
+
+    <!-- ====== Step 2: 视频源 ====== -->
+    <section class="step-panel" id="panel-step2">
+      <h2>视频源目录</h2>
+      <p class="hint">选择包含动漫视频文件的文件夹。</p>
+
+      <div class="form-row">
+        <label for="video-dir">视频目录路径</label>
+        <div class="input-group">
+          <input type="text" id="video-dir" placeholder="例如: D:\anime\bang_dream">
+          <button class="btn" onclick="scanVideos()">扫描</button>
+        </div>
+      </div>
+
+      <div id="video-status" class="status-text"></div>
+
+      <div id="video-list-container" class="hidden">
+        <h3>已发现的视频 <span id="video-count"></span></h3>
+        <ul id="video-list" class="file-list"></ul>
+      </div>
+    </section>
+
+    <!-- ====== Step 3: 选歌 ====== -->
+    <section class="step-panel" id="panel-step3">
+      <h2>选择歌曲</h2>
+      <p class="hint">从网易云音乐搜索并选择歌曲，预览歌词。</p>
+
+      <div class="form-row">
+        <label for="search-keyword">搜索关键词</label>
+        <div class="input-group">
+          <input type="text" id="search-keyword" placeholder="歌曲名、歌手名..."
+                 onkeydown="if(event.key==='Enter') searchMusic()">
+          <button class="btn primary" onclick="searchMusic()">搜索</button>
+        </div>
+      </div>
+
+      <div id="search-status" class="status-text"></div>
+
+      <div id="search-results-container" class="hidden">
+        <h3>搜索结果</h3>
+        <ul id="search-results" class="song-list"></ul>
+      </div>
+
+      <div id="song-detail-container" class="hidden">
+        <h3>歌曲详情</h3>
+        <div id="song-detail" class="song-detail-card">
+          <div class="song-meta">
+            <img id="song-pic" src="" alt="cover" width="120" height="120">
+            <div class="song-info">
+              <h4 id="song-name"></h4>
+              <p id="song-artist"></p>
+              <p id="song-album"></p>
+              <p id="song-duration"></p>
+              <p class="song-id-display">ID: <span id="song-id-display"></span></p>
+            </div>
+          </div>
+        </div>
+        <div class="lyric-preview">
+          <h4>歌词预览</h4>
+          <pre id="lyric-text"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Step 4: 创意设定 ====== -->
+    <section class="step-panel" id="panel-step4">
+      <h2>创作意图与参数</h2>
+
+      <div class="form-row">
+        <label for="creative-intent">创意意图 / 风格描述</label>
+        <textarea id="creative-intent" rows="3"
+          placeholder="例如: 用少女乐队番剪出悬疑犯罪氛围，营造误解向叙事..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <label for="output-name">输出文件名</label>
+        <input type="text" id="output-name" value="mad_output.mp4">
+      </div>
+
+      <div class="form-row">
+        <label for="audio-quality">音质</label>
+        <select id="audio-quality">
+          <option value="lossless">无损 (FLAC)</option>
+          <option value="exhigh">极高 (320kbps)</option>
+          <option value="standard">标准 (128kbps)</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>
+          <input type="checkbox" id="skip-vlm"> 跳过 VLM 标注（使用已有向量库数据）
+        </label>
+      </div>
+    </section>
+
+    <!-- ====== Step 5: 运行 ====== -->
+    <section class="step-panel" id="panel-step5">
+      <h2>执行与输出</h2>
+
+      <div class="run-section">
+        <button class="btn primary large" id="btn-run" onclick="runPipeline()">开始剪辑</button>
+        <button class="btn danger hidden" id="btn-cancel" onclick="cancelPipeline()">取消</button>
+      </div>
+
+      <div id="progress-container" class="hidden">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+        <p class="progress-text" id="progress-text"></p>
+        <p class="progress-stage" id="progress-stage"></p>
+      </div>
+
+      <div id="log-container" class="hidden">
+        <h4>运行日志</h4>
+        <pre id="log-output"></pre>
+      </div>
+
+      <div id="result-container" class="hidden">
+        <div class="result-card">
+          <h3>完成！</h3>
+          <p id="result-path"></p>
+          <div class="result-actions">
+            <a id="btn-download" class="btn primary" href="#">下载视频</a>
+            <button class="btn" onclick="openOutputFolder()">打开文件夹</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 步骤导航按钮 -->
+  <footer class="step-footer">
+    <button class="btn" id="btn-prev" onclick="prevStep()" disabled>上一步</button>
+    <span id="step-indicator">1 / 5</span>
+    <button class="btn primary" id="btn-next" onclick="nextStep()">下一步</button>
+  </footer>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
